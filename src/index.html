@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,24 +8,38 @@
     <title>NMAP Scanner - Port scan any host</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="min-h-screen min-w-screen flex flex-row bg-black/90 text-white">
     <div class="w-full flex flex-col items-center py-16">
         <h1 class="text-3xl">NMAP scanner</h1>
         <p class="text-gray-500 text-lg mt-3">Port scan any host</p>
         <div class="mt-16">
-            <input
-                type="text"
-                id="host-to-scan"
+            <input type="text" id="host-to-scan"
                 class="bg-black/30 block text-lg py-2 px-4 rounded border border-white/10 placeholder:text-gray-500 outline-none"
                 placeholder="Enter host">
-            <button
-                class="bg-gray-700/50 text-gray-300 mx-auto block py-3 px-6 rounded mt-4"
-                type="submit">Scan host</button>
+            <button class="bg-gray-700/50 text-gray-300 mx-auto block py-3 px-6 rounded mt-4" type="submit">Scan
+                host</button>
         </div>
     </div>
-    <div class="w-full p-6 bg-black/30 font-mono">
+    <div class="w-full p-6 bg-black/30 font-mono text-lg">
         <p class="inline">$ nmap</p>
         <p id="nmap-host" class="inline"></p>
     </div>
+
+    <script>
+        syncHostFromInputToCommand()
+
+        function syncHostFromInputToCommand() {
+            let inputElementId = "host-to-scan"
+            let outputElementId = "nmap-host"
+
+            document
+                .getElementById(inputElementId)
+                .addEventListener("input", (e) => {
+                    document.getElementById(outputElementId).innerText = e.target.value
+                })
+        }
+    </script>
 </body>
+
 </html>
