@@ -14,16 +14,19 @@
         <h1 class="text-3xl">NMAP scanner</h1>
         <p class="text-gray-500 text-lg mt-3">Port scan any host</p>
         <div class="mt-16">
-            <input type="text" id="host-to-scan"
-                class="bg-black/30 block text-lg py-2 px-4 rounded border border-white/10 placeholder:text-gray-500 outline-none"
-                placeholder="Enter host">
-            <button class="bg-gray-700/50 text-gray-300 mx-auto block py-3 px-6 rounded mt-4" type="submit">Scan
-                host</button>
+            <form onsubmit="nmapFormSubmit(event)">
+                <input type="text" id="host-to-scan" name="host"
+                    class="bg-black/30 block text-lg py-2 px-4 rounded border border-white/10 placeholder:text-gray-500 outline-none"
+                    placeholder="Enter host">
+                <button class="bg-gray-700/50 text-gray-300 mx-auto block py-3 px-6 rounded mt-4" type="submit">Scan
+                    host</button>
+            </form>
         </div>
     </div>
     <div class="w-full p-6 bg-black/30 font-mono text-lg">
         <p class="inline">$ nmap</p>
         <p id="nmap-host" class="inline"></p>
+        <div id="nmap-scan-result"></div>
     </div>
 
     <script>
@@ -38,6 +41,27 @@
                 .addEventListener("input", (e) => {
                     document.getElementById(outputElementId).innerText = e.target.value
                 })
+        }
+        function nmapFormSubmit(e) {
+            e.preventDefault()
+            let host = e.target.elements.namedItem("host").value
+            fetch("/api/nmap-scan/",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify({
+                        host: host
+                    })
+                })
+                .then((response) => response.text())
+                .then((text) => {
+                    console.log(text)
+                    document.getElementById("nmap-scan-result").innerText = text
+                })
+                .catch(function (res) { console.log(res) })
         }
     </script>
 </body>
