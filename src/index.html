@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NMAP Scanner - Port scan any host</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen min-w-screen flex flex-row bg-black/90 text-white">
+    <div class="w-full flex flex-col items-center py-16">
+        <h1 class="text-3xl">NMAP scanner</h1>
+        <p class="text-gray-500 text-lg mt-3">Port scan any host</p>
+        <div class="mt-16">
+            <form onsubmit="nmapFormSubmit(event)">
+                <input type="text" id="host-to-scan" name="host"
+                    class="bg-black/30 block text-lg py-2 px-4 rounded border border-white/10 placeholder:text-gray-500 outline-none"
+                    placeholder="Enter host">
+                <button class="bg-gray-700/50 text-gray-300 mx-auto block py-3 px-6 rounded mt-4" type="submit">Scan
+                    host</button>
+            </form>
+        </div>
+    </div>
+    <div class="w-full p-6 bg-black/30 font-mono text-lg">
+        <p class="inline">$ nmap</p>
+        <p id="nmap-host" class="inline"></p>
+        <div id="nmap-scan-result"></div>
+    </div>
+
+    <script>
+        syncHostFromInputToCommand()
+
+        function syncHostFromInputToCommand() {
+            let inputElementId = "host-to-scan"
+            let outputElementId = "nmap-host"
+
+            document
+                .getElementById(inputElementId)
+                .addEventListener("input", (e) => {
+                    document.getElementById(outputElementId).innerText = e.target.value
+                })
+        }
+        function nmapFormSubmit(e) {
+            e.preventDefault()
+            let host = e.target.elements.namedItem("host").value
+            fetch("/api/nmap-scan/",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify({
+                        host: host
+                    })
+                })
+                .then((response) => response.text())
+                .then((text) => {
+                    console.log(text)
+                    document.getElementById("nmap-scan-result").innerText = text
+                })
+                .catch(function (res) { console.log(res) })
+        }
+    </script>
+</body>
+
+</html>
